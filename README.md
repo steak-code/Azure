@@ -41,9 +41,13 @@ source .venv/bin/activate  # macOS/Linux
 4. 
 5. 
 
+---
+
 ### 安裝依賴套件
 ```bash
 pip install -r requirements.txt
+
+---
 
 ### 建立 .env 環境變數檔案
 ```bash
@@ -51,6 +55,8 @@ AZURE_STORAGE_CONNECTION_STRING=你的連接字串
 AZURE_CONTAINER_NAME=容器名稱
 AZURE_STORAGE_ACCOUNT_NAME=儲存體帳戶名稱
 AZURE_STORAGE_ACCOUNT_KEY=複製的金鑰
+
+---
 
 ## 🧠 三、Azure Form Recognizer（Document Intelligence）設定
 
