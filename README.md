@@ -34,7 +34,7 @@ python -m venv .venv
 source .venv/bin/activate  # macOS/Linux
 .venv\Scripts\activate     # Windows
 
-# Form Recongizer 
+# Form Recognizer 
 1. 搜尋 Document intelligence -> 選擇剛剛建立的資源群組 -> 選擇免費帳戶建立
 2. 點擊資源管理 -> 金鑰與端點 -> 存取金鑰、位置與端點
 3. 
