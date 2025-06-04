@@ -74,26 +74,42 @@ AZURE_STORAGE_ACCOUNT_KEY=複製的金鑰
 
 ### Dockerfile
 ```dockerfile
-FROM python:3.9-slim
+FROM --platform=linux/amd64 python:3.14-rc-slim
 
+# 安裝系統依賴（build-essential、libffi-dev 等）
+RUN apt update && apt install -y --no-install-recommends \
+    build-essential \
+    libffi-dev \
+    gcc \
+    libssl-dev \
+    && apt clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# 建立工作目錄
 WORKDIR /app
 
-COPY requirements.txt .
+# 複製檔案
+COPY requirements.txt /app/
+COPY example.py /app/
+COPY templates /app/templates
+COPY .env /app/
+
+# 安裝 Python 套件
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
-
+# 容器開放的埠
 EXPOSE 8080
 
-CMD ["python", "example.py"]
+# 啟動入口
+ENTRYPOINT ["python", "example.py"]
 ```
 
 ### requirements.txt
 ```txt
 flask
+python-dotenv
 azure-storage-blob
 azure-ai-formrecognizer
-python-dotenv
 ```
 
 ### example.py 設定
@@ -159,40 +175,6 @@ python example.py
 - **Docker 容器訪問**：http://localhost:8080
 - **檢查容器狀態**：`docker ps`
 - **查看容器日誌**：`docker logs azure_final`
-
----
-
-## 🛠️ 常用 Docker 指令
-
-### 管理容器
-```bash
-# 查看運行中的容器
-docker ps
-
-# 查看所有容器
-docker ps -a
-
-# 停止容器
-docker stop azure_final
-
-# 重啟容器
-docker restart azure_final
-
-# 刪除容器
-docker rm azure_final
-
-# 刪除映像檔
-docker rmi azure_final:latest
-```
-
-### 進入容器除錯
-```bash
-# 進入運行中的容器
-docker exec -it azure_final /bin/bash
-
-# 查看容器日誌
-docker logs -f azure_final
-```
 
 ---
 
