@@ -171,8 +171,8 @@ python example.py
 ---
 
 ## ✅ 驗證部署
-- **本地訪問**：http://localhost:8080
-- **Docker 容器訪問**：http://localhost:8080
+- **本地訪問**：http://127.0.0.1:8080
+- **Docker 容器訪問**：http://127.0.0.1:8080
 - **檢查容器狀態**：`docker ps`
 - **查看容器日誌**：`docker logs azure_final`
 
@@ -185,7 +185,7 @@ python example.py
 - Docker 容器中需要正確讀取環境變數
 
 ### 端口設定
-- 本地開發：使用 `localhost:8080`
+- 本地開發：使用 `http://127.0.0.1:8080`
 - Docker 容器：映射到 `8080:8080`
 - 確認防火牆未阻擋該端口
 
