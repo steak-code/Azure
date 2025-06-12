@@ -1,118 +1,191 @@
+# 📦 Azure Blob + 📄 Azure Form Recognizer 環境建置指南
+
+## 📁 一、Azure Blob 儲存體設定
+### 1. 建立資源群組
+1. 登入 [Azure Portal](https://portal.azure.com/)
+2. 搜尋並建立「資源群組」
+
+### 2. 建立儲存體帳戶
+1. 搜尋 `Blob` 或 `儲存體帳戶`
+2. 建立儲存體帳戶：
+   - 選擇已建立的資源群組
+   - 命名儲存體帳戶（須唯一、全小寫）
+   - 點選「建立」
+
+### 3. 取得連線資訊
+1. 前往儲存體帳戶 → 「安全性 + 網路」→「存取金鑰」
+2. 複製以下資訊：
+   - `連接字串`
+   - `金鑰1`
+
+### 4. 建立容器
+1. 儲存體帳戶 → 「資料儲存」→「容器」
+2. 點選「+ 容器」建立新的 Blob 容器
+3. 命名容器（建議使用小寫英數）
+
 ---
-page_type: sample
-languages:
-- python
-products:
-- azure
-- azure-storage
-description: "How to upload and download blobs from Azure Blob Storage with Python."
-urlFragment: upload-download-blobs-python
----
 
-# How to upload and download blobs from Azure Blob Storage with Python
-
-## This sample shows how to do the following operations of Storage Blobs with Storage SDK
-- Create a Storage Account using the Azure Portal.
-- Create a container.
-- Upload a file to block blob.
-- List blobs.
-- Download a blob to file.
-- Delete a blob.
-- Delete the container.
-
-## Prerequisites
-
-If you don't have an Azure subscription, create a [free account] before you begin.
-
-### Create a Storage Account using the Azure Portal
-
-Step 1 : Create a new general-purpose Storage Account to use for this tutorial. 
- 
-*  Go to the [Azure Portal] and log in using your Azure account. 
-*  Select **New** > **Storage** > **Storage account**. 
-*  Select your Subscription. 
-*  For `Resource group`, create a new one and give it a unique name. 
-*  Enter a name for your storage Account.
-*  Select the `Location` to use for your Storage Account.
-*  Set `Account kind` to **StorageV2(general purpose v2)**.
-*  Set `Performance` to **Standard**. 
-*  Set `Replication` to **Locally-redundant storage (LRS)**.
-*  Set `Secure transfer required` to **Disabled**.
-*  Check **Review + create** and click **Create** to create your Storage Account. 
- 
-Step 2 : Copy and save Connection string.
-
-After your Storage Account is created. Click on it to open it. 
-Select **Settings** > **Access keys** > **Key1/key**, copy the associated **Connection string** to the clipboard, then paste it into a text editor for later use.
-
-### Put the connection string in an environment variable
-
-This solution requires a connection string be stored in an environment variable securely on the machine running the sample. Follow one of the examples below depending on your operating system to create the environment variable. If using Windows close your open IDE or shell and restart it to be able to read the environment variable.
-
-Linux
-
+## ⚙️ 二、測試環境設定
+### 建立虛擬環境（建議）
 ```bash
 export AZURE_STORAGE_CONNECTIONSTRING="<YourConnectionString>"
 ```
 
-Windows
+### Form Recognizer 
+1. 搜尋 Document intelligence -> 選擇剛剛建立的資源群組 -> 選擇免費帳戶建立
+2. 點擊資源管理 -> 金鑰與端點 -> 存取金鑰、位置與端點
 
-```cmd
-setx AZURE_STORAGE_CONNECTIONSTRING "<YourConnectionString>"
-```
+---
 
-### Set up
-
-First, clone the repository on your machine:
-
-```bash
-git clone https://github.com/Azure-Samples/azure-sdk-for-python-storage-blob-upload-download.git
-```
-
-Then, install the dependencies:
+### 安裝依賴套件
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Finally, execute the following command to run this sample:
+---
+
+### 建立 .env 環境變數檔案
 ```bash
 python example.py
 ```
 
-### Use latest Storage SDK
+---
 
-The storage SDK package version here is **2.x.x**, if you are using the [latest](https://pypi.org/project/azure-storage-blob/) version of the storage SDK package, please reference to the following examples:
+## 🧠 三、Azure Form Recognizer（Document Intelligence）設定
+### 1. 建立資源
+1. 搜尋 Document Intelligence
+2. 建立資源（可選擇免費帳戶），並選擇剛剛的資源群組
 
-* [blob_samples_hello_world.py](https://github.com/Azure/azure-sdk-for-python/tree/master/sdk/storage/azure-storage-blob/samples/blob_samples_hello_world.py)  - Examples for common Storage Blob tasks:
-    * Create a container
-    * Create a block, page, or append blob
-    * Upload a file to blob
-    * Download a blob
-    * Delete a blob
-    * Delete the container
-* [blob_samples_enumerate_blobs.py](https://github.com/Azure/azure-sdk-for-python/tree/master/sdk/storage/azure-storage-blob/samples/blob_samples_enumerate_blobs.py)- Examples to enumerate blobs
-    * List blobs.
+### 2. 取得金鑰與端點
+1. 進入資源 → 「資源管理」→「金鑰與端點」
+2. 複製以下資訊：
+   - `金鑰`
+   - `端點`
+   - `位置`
 
-## Contributing
+---
 
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
-Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.microsoft.com.
+## 🐳 四、Docker 容器化設定
 
-When you submit a pull request, a CLA-bot will automatically determine whether you need to provide
-a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions
-provided by the bot. You will only need to do this once across all repos using our CLA.
+### Dockerfile
+```dockerfile
+FROM --platform=linux/amd64 python:3.14-rc-slim
 
-This project has adopted the [Microsoft Open Source Code of Conduct].
-For more information see the [Code of Conduct FAQ] or
-contact [opencode@microsoft.com] with any additional questions or comments.
+# 安裝系統依賴（build-essential、libffi-dev 等）
+RUN apt update && apt install -y --no-install-recommends \
+    build-essential \
+    libffi-dev \
+    gcc \
+    libssl-dev \
+    && apt clean \
+    && rm -rf /var/lib/apt/lists/*
 
-<!-- LINKS -->
-[Microsoft.Azure.Storage]: https://pypi.org/project/azure-storage/
-[Microsoft.Azure.Storage.Blob]: https://pypi.org/project/azure-storage-blob/12.0.0/
-[Azure Portal]: https://portal.azure.com
-[free account]: https://azure.microsoft.com/free/?WT.mc_id=A261C142F
-[Microsoft Open Source Code of Conduct]: https://opensource.microsoft.com/codeofconduct/
-[Code of Conduct FAQ]: https://opensource.microsoft.com/codeofconduct/faq/
-[opencode@microsoft.com]: mailto:opencode@microsoft.com
+# 建立工作目錄
+WORKDIR /app
+
+# 複製檔案
+COPY requirements.txt /app/
+COPY example.py /app/
+COPY templates /app/templates
+COPY .env /app/
+
+# 安裝 Python 套件
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 容器開放的埠
+EXPOSE 8080
+
+# 啟動入口
+ENTRYPOINT ["python", "example.py"]
+```
+
+### requirements.txt
+```txt
+flask
+python-dotenv
+azure-storage-blob
+azure-ai-formrecognizer
+```
+
+### example.py 設定
+確保 `example.py` 最後一行為：
+```python
+app.run(host="0.0.0.0", port=8080, debug=True)
+```
+
+---
+
+## 🚀 五、本地開發環境啟動
+
+### 步驟 1：進入專案目錄
+```bash
+cd C:\Users\user\Downloads\finalfinal\finalfinal
+```
+
+### 步驟 2：建立虛擬環境
+```bash
+python -m venv venv
+```
+
+### 步驟 3：啟動虛擬環境
+```bash
+# Windows
+. venv\Scripts\activate
+
+# macOS/Linux
+source venv/bin/activate
+```
+
+### 步驟 4：安裝依賴套件
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## 🐳 六、Docker 容器化部署
+
+### 步驟 1：確保 Docker 已啟動
+請先打開 Docker Desktop 或確保 Docker 服務已運行
+
+### 步驟 2：建立 Docker 映像檔
+```bash
+docker image build -t azure_final:latest .
+```
+
+### 步驟 3：運行 Docker 容器
+```bash
+docker container run -d --name azure_final -p 8080:8080 azure_final:latest
+```
+
+### 步驟 4：本地測試運行
+```bash
+python example.py
+```
+
+---
+
+## ✅ 驗證部署
+- **本地訪問**：http://127.0.0.1:8080
+- **Docker 容器訪問**：http://127.0.0.1:8080
+- **檢查容器狀態**：`docker ps`
+- **查看容器日誌**：`docker logs azure_final`
+
+---
+
+## 🚨 注意事項
+
+### 環境變數設定
+- 確保 `.env` 檔案包含所有必要的 Azure 設定
+- Docker 容器中需要正確讀取環境變數
+
+### 端口設定
+- 本地開發：使用 `http://127.0.0.1:8080`
+- Docker 容器：映射到 `8080:8080`
+- 確認防火牆未阻擋該端口
+
+### 檔案權限
+- Windows 環境下注意路徑格式
+- 確保 Docker 有權限訪問專案資料夾
+
