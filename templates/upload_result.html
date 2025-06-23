@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>✅ 上傳完成</title>
+  <style>
+    body { font-family: sans-serif; background-color: #f8f9fa; padding: 40px; }
+    h1 { color: #0078D4; }
+    pre {
+      background-color: white;
+      padding: 20px;
+      border-radius: 6px;
+      white-space: pre-wrap;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    a.button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #0078D4;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>✅ 上傳成功！這是辨識出來的文字：</h1>
+
+  <pre>{{ extracted_text }}</pre>
+
+  <a class="button" href="/blobs">📁 查看歷史上傳檔案</a>
+
+</body>
+</html>

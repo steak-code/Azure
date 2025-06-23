@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>📁 已上傳的 PDF 檔案</title>
+  <style>
+    body {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      background-color: #f8f9fa;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 14px 20px;
+      text-align: left;
+      border-bottom: 1px solid #eaeaea;
+    }
+
+    th {
+      background-color: #0078D4;
+      color: white;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f4f8fb;
+    }
+
+    tr:hover {
+      background-color: #eef3f8;
+    }
+
+    a {
+      color: #0078D4;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📁 已上傳的 PDF 檔案</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>檔案名稱</th>
+        <th>大小 (bytes)</th>
+        <th>上傳時間</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for name, size, time, url in blobs %}
+      <tr>
+        <td>{{ name }}</td>
+        <td>{{ size }}</td>
+        <td>{{ time }}</td>
+        <td>
+          {% if name.endswith('.pdf') %}
+            <a href="{{ url }}" target="_blank">下載 PDF</a>
+          {% elif name.endswith('.txt') %}
+            <a href="{{ url }}" target="_blank">查看文字</a>
+          {% else %}
+            <a href="{{ url }}" target="_blank">下載</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</body>
+</html>
